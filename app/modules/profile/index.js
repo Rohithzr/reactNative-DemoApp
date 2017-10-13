@@ -30,22 +30,41 @@ export default class ProfilePage extends Component<{}> {
     this.fetchProfileData = this.fetchProfileData.bind(this);
     this.fetchSliderData = this.fetchSliderData.bind(this);
     this.fetchGridData = this.fetchGridData.bind(this);
+    this.toggleReadMore = this.toggleReadMore.bind(this);
+
+    this.state = {
+      readMore: "collapsed"
+    }
   }
   componentWillMount(){
     this.fetchProfileData();
     this.fetchSliderData();
     this.fetchGridData();
   }
+  toggleReadMore(){
+    let {readMore} = this.state;
+    console.log("readMore",readMore)
+    if(readMore == "collapsed"){
+      this.setState({
+        readMore: "expanded"
+      })
+    }else{
+      this.setState({
+        readMore: "collapsed"
+      })
+    }
+  }
   render() {
     const styles = StyleSheet.create({
       profile: {
-        marginLeft: 50,
         marginTop: 10
       },
       name: {
-        marginLeft: 10,
+        flex: 1,
+        alignItems: "flex-start",
         marginTop: 20,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        padding: 0
       },
       slider:{
         width: "95%",
@@ -61,6 +80,14 @@ export default class ProfilePage extends Component<{}> {
       },
       gridRow:{
         height: 200
+      },
+      bio:{
+        margin: 0,
+        padding: 0
+      },
+      readMore: {
+        margin: 0,
+        padding: 0
       }
     });
 
@@ -72,7 +99,7 @@ export default class ProfilePage extends Component<{}> {
 
     let bioSmall = ""
     if(profile.bio){
-      bioSmall = profile.bio.substring(20)
+      bioSmall = profile.bio.substring(0,10)
     }
     let slider = (<Text>Loading</Text>)
     if(sliderImages.length > 0){
@@ -125,8 +152,8 @@ export default class ProfilePage extends Component<{}> {
                   </Text>
                 </Row>
                 <Row>
-                  <Text>
-                    {bioSmall}...
+                  <Text style={styles.bio} onPress={this.toggleReadMore}>
+                    {(this.state.readMore == "collapsed" ? bioSmall + "... Read More" : profile.bio)}
                   </Text>
                 </Row>
               </Col>
