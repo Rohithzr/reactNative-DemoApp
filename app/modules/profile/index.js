@@ -44,7 +44,23 @@ export default class ProfilePage extends Component<{}> {
       },
       name: {
         marginLeft: 10,
-        marginTop: 20
+        marginTop: 20,
+        fontWeight: 'bold'
+      },
+      slider:{
+        width: "95%",
+        height: 600,
+        backgroundColor: "white",
+        marginLeft: "2.5%",
+      },
+      gridImages: {
+        flex:1,
+        alignItems:'center',
+        borderWidth: 0.5,
+        borderColor: '#d6d7da',
+      },
+      gridRow:{
+        height: 200
       }
     });
 
@@ -60,8 +76,41 @@ export default class ProfilePage extends Component<{}> {
     }
     let slider = (<Text>Loading</Text>)
     if(sliderImages.length > 0){
-      slider = (<ImageSlider images={sliderImages}/>)
+      let images = []
+      for(var i in sliderImages){
+        images.push(sliderImages[i].thumbnail)
+      }
+      slider = (<ImageSlider style={styles.slider} images={images}/>)
     }
+
+    // grid of images
+    let gridElem = (<Text>Loading</Text>)
+    let maxCol = 3;
+
+    if(gridImages.length > 0){
+      let grid = []
+      let eachRow = []
+      for(var i in gridImages){
+        let col = (
+          <Col style={styles.gridImages} key={"col_"+i} size={1}>
+            <Thumbnail square large source={{uri: gridImages[i].thumbnail}} />
+          </Col>
+        )
+        eachRow.push(col)
+
+        if(( i > 0 && ((i + 1) % maxCol == 0)) || (i + 1) == gridImages.length) {
+          grid.push(
+            <Row key={"row_"+i} size={1} style={styles.gridRow}>
+              { eachRow }
+            </Row>
+          )
+          eachRow = []
+        }
+      }
+      gridElem = grid
+    }
+
+    // grid of images
     return (
         <Container>
           <Grid>
@@ -83,14 +132,19 @@ export default class ProfilePage extends Component<{}> {
               </Col>
             </Row>
             <Row size={40}>
-              {slider}
+              <Col size={1}>
+                {slider}
+              </Col>
             </Row>
-            <Row size={30}>
-
+            <Row size={40}>
+              <Col>
+                {gridElem}
+              </Col>
             </Row>
           </Grid>
         </Container>
     );
+    
     
   }
 
